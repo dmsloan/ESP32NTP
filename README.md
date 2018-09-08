@@ -1,4 +1,4 @@
-# Arduino core for ESP32 WiFi chip connecting to NPT time server  [![Build Status](https://travis-ci.org/espressif/arduino-esp32.svg?branch=master)](https://travis-ci.org/espressif/arduino-esp32)
+# Arduino core for ESP32 WiFi chip connecting to NPT time server
 
 ### Need help or have a question? Good luck, I am clueless too.
 
@@ -29,6 +29,10 @@ Finally, if you're sure no one else had the issue, it's probably you.
 ## ESP32Dev Board PINMAP
 
 ![Pin Functions](docs/esp32_pinmap.png)
+
+## AdaFruit Feather32
+
+![Pin Functions](docs/esp32_pinmapAdaFruitFeather.png)
 
 ## Hint
 
