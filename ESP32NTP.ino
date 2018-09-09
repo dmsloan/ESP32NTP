@@ -38,6 +38,9 @@ void setup(){
     Serial.println(WiFi.localIP());
     Serial.print("Signal strength: ");
     Serial.println(WiFi.RSSI());
+    if (WiFi.isConnected() == 1){
+        Serial.println("WiFi is connected"); // show if WiFi is connected, 1 for yes, 0 for no
+    } 
     Serial.println("Contacting Time Server");
 	configTime(3600*timezone, daysavetime*3600, "time.nist.gov", "0.pool.ntp.org", "1.pool.ntp.org"); // I think this is the function to connect to time server
 	struct tm tmstruct ;
@@ -45,13 +48,23 @@ void setup(){
     tmstruct.tm_year = 0;
     getLocalTime(&tmstruct, 5000);  // I think this reterives the time from the ESP32
     Serial.println();
-    WiFi.disconnect();  // disconnect the WiFi
+    WiFi.disconnect(true);  // disconnect the WiFi
+    WiFi.mode(WIFI_OFF); // turn off the WiFi module to save power
+    btStop();   // turn off the blue tooth module to save power
     Serial.println();
     Serial.printf("\nNow is : %d-%02d-%02d %02d:%02d:%02d\n",(tmstruct.tm_year)+1900,( tmstruct.tm_mon)+1, tmstruct.tm_mday,tmstruct.tm_hour , tmstruct.tm_min, tmstruct.tm_sec);
     Serial.println("");
+    Serial.print("WiFi IP address is: ");
     Serial.println(WiFi.localIP());
+    Serial.print("WiFi status: ");
     Serial.println(WiFi.status());      // show the WiFi status
-    Serial.println(WiFi.isConnected()); // show if WiFi is connected, 1 for yes, 2 for no
+    Serial.print("WiFi connection status: ");
+    if (WiFi.isConnected() == 1 ){
+        Serial.println("Connected"); // show if WiFi is connected, 1 for yes, 0 for no
+    }
+    else{
+        Serial.println("Disconnected"); // show if WiFi is connected, 1 for yes, 0 for no
+    }
 }
 
 void loop(){
@@ -64,9 +77,9 @@ void loop(){
   unsigned long currentMillis = millis();
 
   if (currentMillis - previousMillis >= interval) {
-    Serial.println(WiFi.localIP());
-    Serial.println(WiFi.status()); // show the WiFi status
-    Serial.println(WiFi.isConnected()); // show if WiFi is connected, 1 for yes, 2 for no
+    if (WiFi.isConnected() == 1){
+        Serial.println(WiFi.isConnected()); // show if WiFi is connected, 1 for yes, 0 for no
+    } 
     // save the last time you wrote the time to the serial port
     previousMillis = currentMillis;
 
