@@ -1,19 +1,19 @@
-
 #include <time.h> //the ESP32 native time library, does graceful NTP server synchronization
 #include <WiFi.h>
 #include "WiFiInfo.h" // stroes the SSID and PASSWORD in seperate file so it will not be uploaded to github
+                      // this file can be included in a folder by the same name in the libraries folder
 
-const char* ssid     = SSID;
-const char* password = PASSWORD;
+const char* ssid     = SSID; // this is defined in the the WiFiInfo.h file
+const char* password = PASSWORD; // this is defined in the the WiFiInfo.h file
 
 unsigned long beginTime = 0;
 
-long timezone = -8; 
-byte daysavetime = 1;
+long timezone = -8; // Pacific time zone
+byte daysavetime = 1; // 1 specifies daylight savings time 0 specifies standard time
 
 // Generally, you should use "unsigned long" for variables that hold time
 // The value will quickly become too large for an int to store
-unsigned long previousMillis = 0;        // will store last time LED was updated
+unsigned long previousMillis = 0;        // will store the last time the serial port was updated
 
 // constants won't change:
 const long interval = 1000;           // interval at which to blink (milliseconds)
@@ -21,7 +21,7 @@ const long interval = 1000;           // interval at which to blink (millisecond
 void setup(){
     Serial.begin(115200);
     // We start by connecting to a WiFi network
-    Serial.println();
+    Serial.println("This sketch is called ESP32NTP.ino");
     Serial.println();
     Serial.print("Connecting to ");
     Serial.println(ssid);
@@ -35,7 +35,7 @@ void setup(){
         Serial.print(".");
     }
     Serial.println("WiFi connected");
-    Serial.println("IP address: ");
+    Serial.print("IP address: ");
     Serial.println(WiFi.localIP());
     Serial.print("Signal strength: ");
     Serial.println(WiFi.RSSI());
@@ -54,7 +54,9 @@ Serial.println(now);
 
     Serial.println("Contacting Time Server");
 	configTime(3600*timezone, daysavetime*3600, "time.nist.gov", "0.pool.ntp.org", "1.pool.ntp.org"); // I think this is the function to connect to time server
-	struct tm tmstruct ;
+	
+    struct tm tmstruct ;
+    
     delay(2000);
     Serial.print("Time() after connecting to the time server is ");
 //    Serial.println(time_t());  //this is the number of seconds since January 1st 1970)
@@ -95,20 +97,16 @@ void loop(){
   unsigned long currentMillis = millis();
 
   if (currentMillis - previousMillis >= interval) {
-    if (WiFi.isConnected() == 1){
-        Serial.println(WiFi.isConnected()); // show if WiFi is connected, 1 for yes, 0 for no
-    } 
-    // save the last time you wrote the time to the serial port
-    previousMillis = currentMillis;
+
+    previousMillis = currentMillis; // save the last time you wrote the time to the serial port
 
     // write the time from the internal clock:
-    struct tm tmstruct ;
+    struct tm tmstruct;
     tmstruct.tm_year = 0;
     getLocalTime(&tmstruct, 5000);
     Serial.print("time_t() = ");
     Serial.print(time_t());  //this is the number of seconds since January 1st 1970
     Serial.printf("\nNow is : %d-%02d-%02d %02d:%02d:%02d\n",(tmstruct.tm_year)+1900,( tmstruct.tm_mon)+1, tmstruct.tm_mday,tmstruct.tm_hour , tmstruct.tm_min, tmstruct.tm_sec);
-    Serial.println("");
-
+    Serial.println(""); //without this line the clock updates to the serial port every five seconds instead of interval.
   }
 }
