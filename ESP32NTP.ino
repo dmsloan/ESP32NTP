@@ -1,11 +1,12 @@
 
-#include <time.h> 
+#include <time.h> //the ESP32 native time library, does graceful NTP server synchronization
 #include <WiFi.h>
-#include "WiFiInfo.h"
-
+#include "WiFiInfo.h" // stroes the SSID and PASSWORD in seperate file so it will not be uploaded to github
 
 const char* ssid     = SSID;
 const char* password = PASSWORD;
+
+unsigned long beginTime = 0;
 
 long timezone = -8; 
 byte daysavetime = 1;
@@ -16,7 +17,6 @@ unsigned long previousMillis = 0;        // will store last time LED was updated
 
 // constants won't change:
 const long interval = 1000;           // interval at which to blink (milliseconds)
-
 
 void setup(){
     Serial.begin(115200);
@@ -31,6 +31,7 @@ void setup(){
 // wait for connection to WiFi
     while (WiFi.status() != WL_CONNECTED) {
         delay(500);
+        Serial.println(WiFi.status());
         Serial.print(".");
     }
     Serial.println("WiFi connected");
@@ -41,11 +42,27 @@ void setup(){
     if (WiFi.isConnected() == 1){
         Serial.println("WiFi is connected"); // show if WiFi is connected, 1 for yes, 0 for no
     } 
+
+time_t now;
+time(&now);
+Serial.println(now);
+
+    Serial.print("Time() before connecting to the time server is ");
+    //Serial.printf("\nNow is : %d-%02d-%02d %02d:%02d:%02d\n",(tmstruct.tm_year)+1900,( tmstruct.tm_mon)+1, tmstruct.tm_mday,tmstruct.tm_hour , tmstruct.tm_min, tmstruct.tm_sec);
+    time(&now);
+    Serial.println(now); //this is the number of seconds since January 1st 1970)
+
     Serial.println("Contacting Time Server");
 	configTime(3600*timezone, daysavetime*3600, "time.nist.gov", "0.pool.ntp.org", "1.pool.ntp.org"); // I think this is the function to connect to time server
 	struct tm tmstruct ;
     delay(2000);
+    Serial.print("Time() after connecting to the time server is ");
+//    Serial.println(time_t());  //this is the number of seconds since January 1st 1970)
+    time(&now);
+    Serial.println(now);  //this is the number of seconds since January 1st 1970)
+
     tmstruct.tm_year = 0;
+
     getLocalTime(&tmstruct, 5000);  // I think this reterives the time from the ESP32
     Serial.println();
     WiFi.disconnect(true);  // disconnect the WiFi
@@ -53,6 +70,7 @@ void setup(){
     btStop();   // turn off the blue tooth module to save power
     Serial.println();
     Serial.printf("\nNow is : %d-%02d-%02d %02d:%02d:%02d\n",(tmstruct.tm_year)+1900,( tmstruct.tm_mon)+1, tmstruct.tm_mday,tmstruct.tm_hour , tmstruct.tm_min, tmstruct.tm_sec);
+ //   Serial.println(());  //this is the number of seconds since January 1st 1970)
     Serial.println("");
     Serial.print("WiFi IP address is: ");
     Serial.println(WiFi.localIP());
@@ -87,6 +105,8 @@ void loop(){
     struct tm tmstruct ;
     tmstruct.tm_year = 0;
     getLocalTime(&tmstruct, 5000);
+    Serial.print("time_t() = ");
+    Serial.print(time_t());  //this is the number of seconds since January 1st 1970
     Serial.printf("\nNow is : %d-%02d-%02d %02d:%02d:%02d\n",(tmstruct.tm_year)+1900,( tmstruct.tm_mon)+1, tmstruct.tm_mday,tmstruct.tm_hour , tmstruct.tm_min, tmstruct.tm_sec);
     Serial.println("");
 
