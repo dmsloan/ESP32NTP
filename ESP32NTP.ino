@@ -43,9 +43,7 @@ void setup(){
         Serial.println("WiFi is connected"); // show if WiFi is connected, 1 for yes, 0 for no
     } 
 
-time_t now;
-time(&now);
-Serial.println(now);
+    time_t now;
 
     Serial.print("Time() before connecting to the time server is ");
     //Serial.printf("\nNow is : %d-%02d-%02d %02d:%02d:%02d\n",(tmstruct.tm_year)+1900,( tmstruct.tm_mon)+1, tmstruct.tm_mday,tmstruct.tm_hour , tmstruct.tm_min, tmstruct.tm_sec);
@@ -101,12 +99,16 @@ void loop(){
     previousMillis = currentMillis; // save the last time you wrote the time to the serial port
 
     // write the time from the internal clock:
+    
+    time_t now;
+    time(&now);
+
     struct tm tmstruct;
     tmstruct.tm_year = 0;
     getLocalTime(&tmstruct, 5000);
-    Serial.print("time_t() = ");
-    Serial.print(time_t());  //this is the number of seconds since January 1st 1970
-    Serial.printf("\nNow is : %d-%02d-%02d %02d:%02d:%02d\n",(tmstruct.tm_year)+1900,( tmstruct.tm_mon)+1, tmstruct.tm_mday,tmstruct.tm_hour , tmstruct.tm_min, tmstruct.tm_sec);
+    Serial.print("time_t(now) = ");
+    Serial.print(time_t(now));  //this is the number of seconds since January 1st 1970
+    Serial.printf("\nThe formatted time is: %d-%02d-%02d %02d:%02d:%02d\n",(tmstruct.tm_year)+1900,( tmstruct.tm_mon)+1, tmstruct.tm_mday,tmstruct.tm_hour , tmstruct.tm_min, tmstruct.tm_sec);
     Serial.println(""); //without this line the clock updates to the serial port every five seconds instead of interval.
   }
 }
