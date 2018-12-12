@@ -58,6 +58,9 @@ void setup(){
     WiFi.disconnect(true);  // disconnect the WiFi
     WiFi.mode(WIFI_OFF); // turn off the WiFi module to save power
     btStop();   // turn off the blue tooth module to save power
+    Serial.print("Time() after connecting to the time server is ");
+    Serial.println(now);  //this is the number of seconds since January 1st 1970)
+
     Serial.printf("\nNow is : %d-%02d-%02d %02d:%02d:%02d\n",(tmstruct.tm_year)+1900,( tmstruct.tm_mon)+1, tmstruct.tm_mday,tmstruct.tm_hour , tmstruct.tm_min, tmstruct.tm_sec);
  //   Serial.println(());  //this is the number of seconds since January 1st 1970)
     Serial.println("");
